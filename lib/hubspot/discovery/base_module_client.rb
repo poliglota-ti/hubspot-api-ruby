@@ -23,7 +23,7 @@ module Hubspot
         []
       end
 
-      private
+      # private
   
       def define_methods
         define_modules_methods
