@@ -5,6 +5,117 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [16.0.1] - 2022-11-16
+### Fixed
+
+- remove passing params with snake case
+
+## [16.0.0] - 2022-11-10
+### Changed
+
+- update generated code
+- marketing.events (breaking changes)
+
+## [15.0.2] - 2022-11-04
+### Fixed
+
+- pass params with snake case
+
+## [15.0.1] - 2022-10-17
+### Fixed
+
+- codegen path mapping for requiring models
+
+## [15.0.0] - 2022-10-12
+### Changed
+
+- requiring only codegen files that is using to optimize memory usage
+
+### Removed
+
+- old client syntax support
+
+## [14.5.2] - 2022-10-05
+### Fixed
+
+- passing params with existing model
+
+## [14.5.1] - 2022-09-30
+### Changed
+
+- with_http methods were added to the discovery classes
+
+## [14.5.0] - 2022-09-30
+### Changed
+
+- handling ApiError with retries
+
+## [14.4.0] - 2022-09-27
+### Changed
+
+- handling ApiError by passing a block
+
+## [14.3.0] - 2022-08-31
+### Changed
+
+- using hash instead of model object for Hubspot::Client with body param
+
+## [14.2.0] - 2022-08-25
+### Changed
+
+- using new separate configurations for Hubspot::Client
+
+## [14.1.0] - 2022-08-23
+### Changed
+
+- using default ruby StandardError
+
+## [14.0.0] - 2022-08-11
+### Changed
+
+- required ruby version was increased to 2.7
+
+## [13.2.0] - 2022-08-09
+### Changed
+
+- models updates
+
+### Fixed
+
+- query properties param
+
+## [13.0.0] - 2022-06-29
+### Changed (Breaking changes)
+
+- crm.objects.feedback_submissions API
+
+### Fixed
+
+- crm.contacts.basic_api id_property
+
+## [12.0.0] - 2022-06-09
+### Added
+
+- cms.source_code API client
+- crm.objects.calls API client
+- crm.objects.emails API client
+- crm.objects.meetings API client
+- crm.objects.notes API client
+- crm.objects.tasks API client
+- marketing.forms API client
+- marketing.events API client
+- settings.users API client
+
+### Changed (Breaking changes)
+
+- cms.blogs.authors.author_api => cms.blogs.authors.blog_authors_api
+- cms.blogs.blog_posts.default_api => cms.blogs.blog_posts.blog_posts_api
+- cms.blogs.tags.default_api => cms.blogs.tags.blog_tags_api
+
+## [11.2.0] - 2022-05-12
+
+- added discovery classes
+
 ## [11.1.1] - 2021-11-10
 
 - fixed type for the file collection response

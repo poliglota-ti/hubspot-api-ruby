@@ -20,31 +20,34 @@ gem 'hubspot-api-client'
 ## Getting Started
 
 Please follow the [installation](#installation) procedure and then run the following code:
+
 ```ruby
 # Load the gem
 require 'hubspot-api-client'
 
-# Setup authorization
-Hubspot.configure do |config|
-  # Configure API key authorization: hapikey
-  config.api_key['hapikey'] = 'demo'
-end
+# Setup client
+client = Hubspot::Client.new(access_token: 'your_access_token')
 
 # Get contacts
-basic_api = Hubspot::Crm::Contacts::BasicApi.new
-basic_api.get_page(auth_names: 'hapikey')
-
+contacts = client.crm.contacts.basic_api.get_page
 ```
 
 ### Usage
+
+#### Hapikey support:
+
+Please, note that hapikey is no longer supported after v13.1.0. You can get more info about hapikey sunset [here](https://developers.hubspot.com/changelog/upcoming-api-key-sunset). Also, plese, visit a [migration guide](https://developers.hubspot.com/docs/api/migrate-an-api-key-integration-to-a-private-app) if you need help with a migration process.
 
 ### Get all:
 get_all method is available for all major objects (Companies, Contacts, Deals, LineItems, Products, Quotes & Tickets) and works like
 
 ```ruby
-basic_api = Hubspot::Crm::Contacts::BasicApi.new
-all_contacts = basic_api.get_all(auth_names: 'oauth2')
+client = Hubspot::Client.new(access_token: 'your_oauth2_access_token')
+all_contacts = client.crm.contacts.basic_api.get_all
 ```
+
+You'll need to create a [private app](https://developers.hubspot.com/docs/api/private-apps) to get your access token or you can obtain OAuth2 access token.
+
 Please note that pagination is used under the hood to get all results.
 
 
@@ -53,68 +56,78 @@ Please note that pagination is used under the hood to get all results.
 #### Creation
 
 ```ruby
-config = ::Hubspot::Crm::Schemas::Configuration.new do |config|
-    config.api_key = { 'hapikey' => 'your_hapikey' }
-  end
-  api_client = ::Hubspot::Crm::Schemas::ApiClient.new(config)
-  api = ::Hubspot::Crm::Schemas::CoreApi.new(api_client)
-  labels = ::Hubspot::Crm::Schemas::ObjectTypeDefinitionLabels.new(singular: 'My object', plural: 'My objects')
-  option = ::Hubspot::Crm::Schemas::OptionInput.new(
-    label: 'Option A',
-    value: 'A',
-    description: 'Choice number one',
-    display_order: 1,
-    hidden: false
-  )
-  property = ::Hubspot::Crm::Schemas::ObjectTypePropertyCreate.new(
-      name: 'property001',
-      label: 'My object property',
-      group_name: 'my_object_information',
-      options: [option],
-      display_order: 2,
-      type: 'enumeration',
-      field_type: 'select'
-  )
-  object_schema_egg = ::Hubspot::Crm::Schemas::ObjectSchemaEgg.new(
-      labels: labels,
-      required_properties: ['property001'],
-      searchable_properties: [],
-      primary_display_property: 'property001',
-      secondary_display_properties: [],
-      properties: [property],
-      associated_objects: ['CONTACT'],
-      name: 'my_object'
-  )
-  api_response = api.create(object_schema_egg)
+client = Hubspot::Client.new(access_token: 'your_oauth2_access_token')
+
+labels = {
+  singular: 'My object',
+  plural: 'My objects'
+}
+
+option = {
+  label: 'Option A',
+  value: 'A',
+  description: 'Choice number one',
+  display_order: 1,
+  hidden: false
+}
+
+property = {
+  name: 'property001',
+  label: 'My object property',
+  group_name: 'my_object_information',
+  options: [option],
+  display_order: 2,
+  type: 'enumeration',
+  field_type: 'select'
+}
+
+body = {
+  labels: labels,
+  required_properties: ['property001'],
+  searchable_properties: [],
+  primary_display_property: 'property001',
+  secondary_display_properties: [],
+  properties: [property],
+  associated_objects: ['CONTACT'],
+  name: 'my_object'
+}
+
+api_response = client.crm.schemas.core_api.create(body: body)
 ```
 
 
 ### Error handling
+
+#### You can rescue an ApiError by passing a block to the method
+
+```ruby
+require 'hubspot-api-client'
+
+client = Hubspot::Client.new(access_token: 'your_access_token')
+
+contacts = client.crm.contacts.basic_api.get_page { |error| error.message }
+```
 
 #### You can set number of retry attempts and delay in seconds before retry on specific status code of response.
 
 Available params:
   - max_retries (maximum number of retries)
   - seconds_delay (pause in seconds between retries)
-  - retry_block (block that is executed after every retry)
+  - passing a block (block that handles errors occured)
 
 
 ```ruby
-config = ::Hubspot::Crm::Companies::Configuration.new do |config|
-  config.access_token = 'YOUR ACCESS TOKEN'
+require 'hubspot-api-client'
 
-  # Set handlers of statuses you want to handle
-  config.error_handler = {
-    [429, 430, 442] => { max_retries: 5, seconds_delay: 1 },
-    (500..530).to_a => { max_retries: 2, seconds_delay: 2 },
-    400 => { max_retries: 3, seconds_delay: 3 },
-  }
-end
+# Set handlers of statuses you want to handle
+retry_config = {
+  500..530 => { max_retries: 2, seconds_delay: 2 },
+  400 => { max_retries: 3, seconds_delay: 3 }
+}
 
-api_client = ::Hubspot::Crm::Companies::ApiClient.new(config)
-basic_api = ::Hubspot::Crm::Companies::BasicApi.new(api_client)
-end
+client = Hubspot::Client.new(access_token: 'your_access_token')
 
+contacts = client.crm.contacts.basic_api.get_page(retry: retry_config) { |error| error.code }
 ```
 
 ### Sample apps
